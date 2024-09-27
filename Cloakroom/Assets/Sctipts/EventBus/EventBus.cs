@@ -9,19 +9,20 @@ public class EventBus : MonoBehaviour
     public void Subscribe<T>(Action<T> callback)
     {
         string key = typeof(T).Name;
-        if (_signalCallbacks.ContainsKey(key))
-            _signalCallbacks[key].Add(callback);
-        else
-            _signalCallbacks.Add(key, new List<object>() { callback });
+        if (!_signalCallbacks.ContainsKey(key))
+        {
+            _signalCallbacks.Add(key, new List<object>());
+        }
+        _signalCallbacks[key].Add(callback);
     }
 
     public void Unsubscribe<T>(Action<T> callback)
     {
         string key = typeof(T).Name;
         if (_signalCallbacks.ContainsKey(key))
+        {
             _signalCallbacks[key].Remove(callback);
-        else
-            Debug.LogErrorFormat($"There is no {typeof(T).Name} in EventBus");
+        }
     }
 
     public void Invoke<T>(T signal)
@@ -37,3 +38,4 @@ public class EventBus : MonoBehaviour
         }
     }
 }
+
