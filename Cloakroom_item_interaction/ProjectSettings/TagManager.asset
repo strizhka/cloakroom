@@ -5,6 +5,14 @@ TagManager:
   serializedVersion: 2
   tags:
   - Interactive object
+  - Baggage
+  - BaggageZone
+  - Coats1
+  - Coats1Zone
+  - Coats2
+  - Coats2Zone
+  - Phone
+  - PhoneZone
   layers:
   - Default
   - TransparentFX
