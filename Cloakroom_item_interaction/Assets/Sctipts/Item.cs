@@ -22,6 +22,7 @@ public class Item : MonoBehaviour, IInteractable
     private Rigidbody rb;
     private EventBus _eventBus;
     private int _secondsLeft;
+    private NpcMovement _npcMovement;
 
     private void Start()
     {
@@ -36,6 +37,8 @@ public class Item : MonoBehaviour, IInteractable
         {
             Debug.LogError("EventBus component is missing!");
         }
+
+        _npcMovement = GetComponentInParent<NpcMovement>();
 
         rb = gameObject.GetComponent<Rigidbody>();
         player = GameObject.FindGameObjectWithTag("Player").transform.GetChild(0).GetChild(0).transform;
@@ -71,15 +74,18 @@ public class Item : MonoBehaviour, IInteractable
     }
 
     public void Drop(bool throwed){
-        rb.isKinematic = false;
-        if (throwed){
-            rb.AddForce(transform.parent.transform.forward * throwingForce);
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+            if (throwed){
+                rb.AddForce(transform.parent.transform.forward * throwingForce);
+            }
+            transform.SetParent(null);
         }
-        transform.SetParent(null);
     }
 
     public void Highlight(bool state){
-        if (state && rb.isKinematic)
+        if (state && rb.isKinematic && (!gameObject.CompareTag("Phone") && !gameObject.CompareTag("Baggage") && !gameObject.CompareTag("Coats1") && !gameObject.CompareTag("Coats2")))
             return;
         if (!outline.IsDestroyed())
             outline.enabled = state;
@@ -89,10 +95,17 @@ public class Item : MonoBehaviour, IInteractable
     {
         if (other != null)
         {
-            if (other.gameObject.CompareTag(tag+"Zone"))
+            if (other.gameObject.CompareTag(tag + "Zone"))
             {
-                Debug.Log("dct dtj");
                 AddTime(_seconds);
+                if (_npcMovement != null)
+                {
+                    _npcMovement.IsServed = true;
+                }
+                else
+                {
+                    Debug.Log("Негде менять IsServed");
+                }
                 Destroy(gameObject);
             }
         }
