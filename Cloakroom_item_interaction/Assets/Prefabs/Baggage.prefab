@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outlineWidth: 8
-  throwingForce: 6.47
+  throwingForce: 3
   _seconds: 10
   interpolationSpeed: 0.03
 --- !u!114 &2473148635291134541

@@ -78,7 +78,7 @@ public class Item : MonoBehaviour, IInteractable
         {
             rb.isKinematic = false;
             if (throwed){
-                rb.AddForce(transform.parent.transform.forward * throwingForce);
+                rb.AddForce(transform.parent.transform.forward * throwingForce / Time.deltaTime);
             }
             transform.SetParent(null);
         }
@@ -104,7 +104,7 @@ public class Item : MonoBehaviour, IInteractable
                 }
                 else
                 {
-                    Debug.Log("Негде менять IsServed");
+                    Debug.Log("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ IsServed");
                 }
                 Destroy(gameObject);
             }
