@@ -21,7 +21,7 @@ public class Item : MonoBehaviour, IInteractable
     private Transform player;
     private Rigidbody rb;
     private EventBus _eventBus;
-    private int _secondsLeft;
+    static int _secondsLeft;
     private NpcMovement _npcMovement;
 
     private void Start()
@@ -104,7 +104,7 @@ public class Item : MonoBehaviour, IInteractable
                 }
                 else
                 {
-                    Debug.Log("����� ������ IsServed");
+
                 }
                 Destroy(gameObject);
             }
@@ -114,14 +114,13 @@ public class Item : MonoBehaviour, IInteractable
     private void GetTime(TimeChangedSignal signal)
     {
         _secondsLeft = signal.SecondsLeft;
-        Debug.Log(_secondsLeft);
-        Debug.Log(signal.SecondsLeft);
     }
 
     private void AddTime(int seconds)
     {
         _secondsLeft = Mathf.Clamp(_secondsLeft + seconds, 0, 100000);
         _eventBus.Invoke(new TimeChangedSignal(_secondsLeft));
+
     }
 
     private void OnDestroy()
@@ -130,5 +129,6 @@ public class Item : MonoBehaviour, IInteractable
         {
             _eventBus.Unsubscribe<TimeChangedSignal>(GetTime);
         }
+        Debug.Log(_secondsLeft);
     }
 }

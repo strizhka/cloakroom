@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _timerText;
+    [SerializeField] private float _maxTimer = 120f;
 
+
+    private Image _timerBar;
     private EventBus _eventBus;
-    private int _secondsLeft;
+    private float _secondsLeft;
 
     private void Start()
     {
+        _timerBar = GetComponent<Image>();
         EventBus eventBus = FindObjectOfType<EventBus>();
         _eventBus = eventBus;
 
@@ -24,8 +29,6 @@ public class Timer : MonoBehaviour
         {
             Debug.LogError("EventBus component is missing!");
         }
-
-        _secondsLeft = 0;
     }
 
     private void Update()
@@ -43,6 +46,7 @@ public class Timer : MonoBehaviour
         int minutes = Mathf.FloorToInt(_secondsLeft / 60);
         int seconds = Mathf.FloorToInt(_secondsLeft % 60);
         _timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        _timerBar.fillAmount = _secondsLeft / _maxTimer;
     }
 
     private void TimeStopped()

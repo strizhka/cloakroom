@@ -84,7 +84,6 @@ public class NpcMovement : MonoBehaviour
 
     public void SetQueuePosition(LineChangedSignal line)
     {
-        UnityEngine.Debug.Log(_queuePosition);
         int position = 0;
         foreach (NpcMovement npc in QueueManager.queue)
         {
