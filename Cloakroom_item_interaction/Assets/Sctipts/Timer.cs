@@ -1,29 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public class Timer : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _timerText;
-    [SerializeField] private float _maxTimer = 120f;
-
+    [SerializeField] private float _maxTimer = 90f;
 
     private Image _timerBar;
     private EventBus _eventBus;
-    private float _secondsLeft;
+    private bool _isTimeStopped = false;
+    private bool _isTimerFulfilled = false;
+    private Coroutine _removeTimeCoroutine;
+
+    public static float SecondsLeft;
 
     private void Start()
     {
         _timerBar = GetComponent<Image>();
+
         EventBus eventBus = FindObjectOfType<EventBus>();
         _eventBus = eventBus;
 
         if (_eventBus != null)
         {
-            _eventBus.Subscribe<TimeChangedSignal>(GetTime);
+            _eventBus.Subscribe<TimerChangedSignal>(GetTime);
         }
         else
         {
@@ -34,37 +36,92 @@ public class Timer : MonoBehaviour
     private void Update()
     {
         ShowTime();
+        TimeStop();
     }
 
-    private void GetTime(TimeChangedSignal signal)
+    private void GetTime(TimerChangedSignal signal)
     {
-        _secondsLeft = signal.SecondsLeft;
+        SecondsLeft = signal.SecondsLeft;
+
+        if (SecondsLeft >= _maxTimer)
+        {
+            _isTimerFulfilled = true;
+        }
+        else
+        {
+            _isTimerFulfilled = false;
+        }
     }
 
     private void ShowTime()
     {
-        int minutes = Mathf.FloorToInt(_secondsLeft / 60);
-        int seconds = Mathf.FloorToInt(_secondsLeft % 60);
+        int minutes = Mathf.FloorToInt(SecondsLeft / 60);
+        int seconds = Mathf.FloorToInt(SecondsLeft % 60);
         _timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-        _timerBar.fillAmount = _secondsLeft / _maxTimer;
+        _timerBar.fillAmount = SecondsLeft / _maxTimer;
     }
 
-    private void TimeStopped()
+    private void ToggleTimeStopped()
     {
-        //stop time
-        if (_secondsLeft > 5)
+        _isTimeStopped = !_isTimeStopped;
+        TimeManager.IsTimeGoing = !TimeManager.IsTimeGoing;
+
+        GameObject[] npcs = GameObject.FindGameObjectsWithTag("NPC");
+        foreach (GameObject npc in npcs)
         {
-            _secondsLeft -= ((int)Time.deltaTime);
+            var navAgent = npc.GetComponent<NavMeshAgent>();
+            if (navAgent != null)
+            {
+                navAgent.isStopped = _isTimeStopped;
+            }
+
+            var animator = npc.GetComponent<Animator>();
+            if (animator != null)
+            {
+                animator.enabled = !_isTimeStopped;
+            }
         }
-        else if (_secondsLeft > 0)
+
+        if (_isTimeStopped)
         {
-            _timerText.color = Color.red;
-            _secondsLeft -= ((int)Time.deltaTime);
+            Debug.Log("Время остановлено");
+            if (_removeTimeCoroutine == null)
+            {
+                _removeTimeCoroutine = StartCoroutine(RemoveTimeCoroutine());
+            }
         }
         else
         {
-            _secondsLeft = 0;
-            //start time 
+            Debug.Log("Время возобновлено");
+            if (_removeTimeCoroutine != null)
+            {
+                StopCoroutine(_removeTimeCoroutine);
+                _removeTimeCoroutine = null;
+            }
         }
     }
+
+    private void TimeStop()
+    {
+        if ((Input.GetKeyDown(KeyCode.Tab) && (_isTimerFulfilled || _isTimeStopped)) || (SecondsLeft == 0 && _isTimeStopped))
+        {
+            ToggleTimeStopped();
+        }
+    }
+
+    private System.Collections.IEnumerator RemoveTimeCoroutine()
+    {
+        while (_isTimeStopped)
+        {
+            RemoveTime();
+            yield return new WaitForSeconds(2f);
+        }
+    }
+
+    private void RemoveTime()
+    {
+        SecondsLeft = Mathf.Clamp(SecondsLeft - 10, 0, _maxTimer);
+        _eventBus.Invoke(new TimerChangedSignal(SecondsLeft));
+    }
 }
+

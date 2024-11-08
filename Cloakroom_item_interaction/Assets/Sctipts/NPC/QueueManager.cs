@@ -52,9 +52,6 @@ public class QueueManager : MonoBehaviour
         int peopleInLine = queue.Count;
         _eventBus?.Invoke(new LineChangedSignal(peopleInLine));
     }
-
-
-
 }
 
 

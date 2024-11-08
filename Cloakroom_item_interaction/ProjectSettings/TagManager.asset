@@ -13,6 +13,8 @@ TagManager:
   - Coats2Zone
   - Phone
   - PhoneZone
+  - Undefined
+  - NPC
   layers:
   - Default
   - TransparentFX

@@ -8,6 +8,7 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class Item : MonoBehaviour, IInteractable
 {
+
     [SerializeField] private float outlineWidth;
     [SerializeField] private float throwingForce;
     [SerializeField] private int _seconds;
@@ -21,7 +22,6 @@ public class Item : MonoBehaviour, IInteractable
     private Transform player;
     private Rigidbody rb;
     private EventBus _eventBus;
-    static int _secondsLeft;
     private NpcMovement _npcMovement;
 
     private void Start()
@@ -29,14 +29,6 @@ public class Item : MonoBehaviour, IInteractable
         EventBus eventBus = FindObjectOfType<EventBus>();
         _eventBus = eventBus;
 
-        if (_eventBus != null)
-        {
-            _eventBus.Subscribe<TimeChangedSignal>(GetTime);
-        }
-        else
-        {
-            Debug.LogError("EventBus component is missing!");
-        }
 
         _npcMovement = GetComponentInParent<NpcMovement>();
 
@@ -111,24 +103,11 @@ public class Item : MonoBehaviour, IInteractable
         }
     }
 
-    private void GetTime(TimeChangedSignal signal)
+    private void AddTime(float seconds)
     {
-        _secondsLeft = signal.SecondsLeft;
-    }
-
-    private void AddTime(int seconds)
-    {
-        _secondsLeft = Mathf.Clamp(_secondsLeft + seconds, 0, 100000);
-        _eventBus.Invoke(new TimeChangedSignal(_secondsLeft));
+        Timer.SecondsLeft = Mathf.Clamp(Timer.SecondsLeft + seconds, 0, 90);
+        _eventBus.Invoke(new TimerChangedSignal(Timer.SecondsLeft));
 
     }
 
-    private void OnDestroy()
-    {
-        if (_eventBus != null)
-        {
-            _eventBus.Unsubscribe<TimeChangedSignal>(GetTime);
-        }
-        Debug.Log(_secondsLeft);
-    }
 }

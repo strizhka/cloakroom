@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimeChangedSignal
+public class TimerChangedSignal
 {
-    public readonly int SecondsLeft;
+    public readonly float SecondsLeft;
 
-    public TimeChangedSignal(int seconds)
+    public TimerChangedSignal(float seconds)
     {
         SecondsLeft = seconds;
     }
