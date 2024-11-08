@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 public class TimeGoingSignal
 {
-    public readonly int Time;
+    public readonly float Time;
 
-    public TimeGoingSignal()
+    public TimeGoingSignal(float time)
     {
-        Time = +1;
+        Time = time;
     }
 }

@@ -65,6 +65,7 @@ public class Timer : MonoBehaviour
     {
         _isTimeStopped = !_isTimeStopped;
         TimeManager.IsTimeGoing = !TimeManager.IsTimeGoing;
+        Debug.Log(TimeManager.IsTimeGoing);
 
         GameObject[] npcs = GameObject.FindGameObjectsWithTag("NPC");
         foreach (GameObject npc in npcs)

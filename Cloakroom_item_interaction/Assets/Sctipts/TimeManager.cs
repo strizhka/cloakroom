@@ -8,6 +8,7 @@ public class TimeManager : MonoBehaviour
     public static bool IsTimeGoing = true;
 
     private EventBus _eventBus;
+    private float _currentTime;
 
     private void Awake()
     {
@@ -19,7 +20,9 @@ public class TimeManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("EventBus найден!");
+
+            _eventBus.Subscribe<TimeGoingSignal>(GetTime);
+
         }
     }
 
@@ -30,15 +33,25 @@ public class TimeManager : MonoBehaviour
 
     private IEnumerator TimeFlow()
     {
-        while (IsTimeGoing)
+        while(true)
         {
+            if (IsTimeGoing)
+            {
+                TimeGoing();
+            }
             yield return new WaitForSeconds(2f);
-            TimeGoing();
         }
+    }
+
+    private void GetTime(TimeGoingSignal signal)
+    {
+        _currentTime = signal.Time;
+
     }
 
     private void TimeGoing()
     {
-        _eventBus.Invoke(new TimeGoingSignal());
+        float SecondsToAdd = _currentTime + 1;
+        _eventBus.Invoke(new TimeGoingSignal(SecondsToAdd));
     }
 }
