@@ -14,7 +14,9 @@ public class Item : MonoBehaviour, IInteractable
     [SerializeField] private int _seconds;
 
     [Range(0, 1f)]
-    [SerializeField]  private float interpolationSpeed = 0.15f;
+    [SerializeField] private float interpolationSpeed = 0.15f;
+    [SerializeField] private bool isEventRelated = false;
+    [SerializeField] Sprite icon; // null for general items
 
     Outline outline;
 
@@ -32,13 +34,14 @@ public class Item : MonoBehaviour, IInteractable
 
         _npcMovement = GetComponentInParent<NpcMovement>();
 
-        rb = gameObject.GetComponent<Rigidbody>();
+        if (!isEventRelated)
+            rb = gameObject.GetComponent<Rigidbody>();
         player = GameObject.FindGameObjectWithTag("Player").transform.GetChild(0).GetChild(0).transform;
 
         outline = gameObject.GetComponent<Outline>();
 
         outline.OutlineMode = Outline.Mode.OutlineAll;
-        outline.OutlineColor = Color.red;
+        //outline.OutlineColor = Color.red;
         outline.OutlineWidth = outlineWidth;
         outline.enabled = false;
     }
@@ -46,20 +49,23 @@ public class Item : MonoBehaviour, IInteractable
     private void Update()
     {
         if (moving){
-            if (Vector3.SqrMagnitude(transform.position - player.position - player.forward * 1f - player.up * -0.4f) < 0.01f){
-                transform.position = Vector3.Lerp(transform.position, player.position + player.forward * 1f + player.up * -0.4f, 1f);
+            if (Vector3.SqrMagnitude(transform.position - player.position - player.forward * 1f) < 0.01f){
+                transform.position = Vector3.Lerp(transform.position, player.position + player.forward * 1f, 1f);
                 moving = false;
                 transform.SetParent(player);
             }
             else {
-                transform.position = Vector3.Lerp(transform.position, player.position + player.forward * 1f + player.up * -0.4f, interpolationSpeed);
-                //Debug.Log(transform.position);
-                //Debug.LogWarning(player.position);
+                transform.position = Vector3.Lerp(transform.position, player.position + player.forward * 1f , interpolationSpeed);
             }
         }
     }
 
     public void Interact(){
+        if (isEventRelated) {
+            player.GetComponent<Inventory>().InsertItem(icon, transform.name);
+            Destroy(gameObject);
+            return;
+        }
         moving = true;
         rb.isKinematic = true;
         outline.enabled = false;
@@ -77,7 +83,7 @@ public class Item : MonoBehaviour, IInteractable
     }
 
     public void Highlight(bool state){
-        if (state && rb.isKinematic && (!gameObject.CompareTag("Phone") && !gameObject.CompareTag("Baggage") && !gameObject.CompareTag("Coats1") && !gameObject.CompareTag("Coats2")))
+        if (!isEventRelated && state && rb.isKinematic && (!gameObject.CompareTag("Phone") && !gameObject.CompareTag("Baggage") && !gameObject.CompareTag("Coats1") && !gameObject.CompareTag("Coats2")))
             return;
         if (!outline.IsDestroyed())
             outline.enabled = state;

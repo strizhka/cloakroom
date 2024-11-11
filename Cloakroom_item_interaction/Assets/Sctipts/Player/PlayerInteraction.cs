@@ -15,6 +15,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] float interactRange;
 
     private IInteractable lastInteractedObject, heldItem;
+    private EventTrigger eventTrigger;
     //private float counter = 0;
 
     void Update()
@@ -42,6 +43,12 @@ public class PlayerInteraction : MonoBehaviour
                     lastInteractedObject.Highlight(false);
                 }
                 lastInteractedObject = interactedObject;
+            }
+
+            if (hitInfo.collider.gameObject.TryGetComponent(out EventTrigger eventTrigger)){
+                if (Input.GetKeyDown(KeyCode.E)){
+                    eventTrigger.UseItem(transform.GetComponent<Inventory>());
+                }
             }
         }
         else {
