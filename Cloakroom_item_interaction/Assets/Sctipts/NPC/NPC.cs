@@ -18,7 +18,6 @@ public class NPC
         // и запускаем их
         var eventPoint = eventPoints.First(x => x.TimePoint == time);
         Debug.Log($"{Name} начинает в {time} делать {eventPoint.EventPointName}");
-
         eventPoints.Remove(eventPoint);
     }
 
@@ -38,5 +37,6 @@ public class NPC
     {
         public string EventPointName;
         public int TimePoint;
+
     }
 }

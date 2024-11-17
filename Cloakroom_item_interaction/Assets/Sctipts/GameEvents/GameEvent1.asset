@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ae421746ba18d4386fc306f67213d2, type: 3}
   m_Name: GameEvent1
   m_EditorClassIdentifier: 
-  IsActive: 0
+  IsActive: 1
+  StartTimeEvent: 10
   eventName: 
-  eventTime: 0
-  involvedNPCs: []
+  involvedNpcs:
+  - Name: "\u0413\u0443\u043A"
+    gameObject: {fileID: 0}
+    eventPoints: []
