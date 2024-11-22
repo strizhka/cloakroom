@@ -14,17 +14,30 @@ public class NPC
 
     public void RunScheduledAtion(float time)
     {
-        // Мы получаем все дейсвтия которые должен сделать игрок из списка эвентов нашего игрока
-        // и запускаем их
+        // пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        // пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ
         var eventPoint = eventPoints.First(x => x.TimePoint == time);
-        Debug.Log($"{Name} начинает в {time} делать {eventPoint.EventPointName}");
+        Debug.Log($"{Name} пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ {time} пїЅпїЅпїЅпїЅпїЅпїЅ {eventPoint.EventPointName}");
         eventPoints.Remove(eventPoint);
     }
 
     public void StopAction()
     {
-        // Метод вызываеться когда просиходит остановка времени
-        // все действия npc приостнаавливаются
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ npc пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        gameObject.GetComponent<NpcMovement>().StopMoving();
+
+
+        EventTrigger[] triggers = UnityEngine.Object.FindObjectsByType<EventTrigger>(FindObjectsSortMode.None);
+
+        foreach (var trigger in triggers) {
+            if (trigger.itemInserted) {
+                // changing eventPoints list
+            }
+            else {
+                // changing eventPoints list
+            }
+        }
     }
 
     public List<EventPoint> SearchEventPointsAtMoment(float time)

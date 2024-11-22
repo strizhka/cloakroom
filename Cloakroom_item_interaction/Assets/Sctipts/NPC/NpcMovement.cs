@@ -24,6 +24,7 @@ public class NpcMovement : MonoBehaviour
     private GameObject _npc;
 
     public bool IsServed = false;
+    private bool allowedToMove = true;
 
     private void Awake()
     {
@@ -58,9 +59,12 @@ public class NpcMovement : MonoBehaviour
         }
     }
 
+    public void StopMoving() {
+        allowedToMove = false;
+    }
     private void MoveToTarget()
     {
-        if (_queuePosition >= 0 && _queuePosition < queuePositions.Length)
+        if (allowedToMove && _queuePosition >= 0 && _queuePosition < queuePositions.Length)
         {
             Transform target = queuePositions[_queuePosition];
 
